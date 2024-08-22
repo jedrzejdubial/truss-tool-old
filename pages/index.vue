@@ -1,14 +1,11 @@
 <script setup>
-import { PhFilePlus, PhFolderOpen } from '@phosphor-icons/vue'
+import { PhFilePlus } from '@phosphor-icons/vue'
 </script>
 
 <template>
     <div id="main_wrap">
         <h1>Welcome to Truss Tool</h1>
-        <div id="main_buttons">
-            <Button title="Create a new project" :tag="PhFilePlus" :path="'/new'" />
-            <Button title="Open an existing project" :tag="PhFolderOpen" />
-        </div>
+        <Button title="Create a new project" :tag="PhFilePlus" path="/new" />
     </div>
 </template>
 
@@ -22,10 +19,5 @@ import { PhFilePlus, PhFolderOpen } from '@phosphor-icons/vue'
     justify-content: center;
     align-items: center;
     box-sizing: border;
-}
-
-#main_buttons {
-    display: flex;
-    gap: 50px;
 }
 </style>

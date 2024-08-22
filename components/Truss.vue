@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  width: String
+  width: Number
 })
 </script>
 

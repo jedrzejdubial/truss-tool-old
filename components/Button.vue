@@ -6,15 +6,15 @@ const props = defineProps({
   action: Function
 })
 
-/* Takes tag prop and returns a custom element
-Made to work with PhosphorIcons */
-const IconComponent = () => h(props.tag, { size: '32', color: 'white' })
+const handleClick = computed(() => {
+  return props.action ? props.action : props.path ? () => navigateTo(props.path) : undefined
+})
 </script>
 
 <template>
     <div id="button_wrap">
-        <button id="button_el" @click="navigateTo(props.path)">
-            <component :is="IconComponent" />
+        <button id="button_el" @click="handleClick">
+            <component :is="() => h(props.tag, { size: '32', color: 'white' })" />
         </button>
         <p>{{ props.title }}</p>
     </div>

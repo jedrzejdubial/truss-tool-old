@@ -1,13 +1,13 @@
 <script setup>
-import { PhDownloadSimple, PhFileArrowDown, PhSelection, PhArrowClockwise, PhTrashSimple } from '@phosphor-icons/vue'
+import { PhResize, PhDownloadSimple, PhSelection, PhArrowClockwise, PhTrashSimple, PhX } from '@phosphor-icons/vue'
 import list from './public/list.json'
 </script>
 
 <template>
     <nav>
         <div id="new_buttons">
+            <Button :tag="PhResize" onclick="list.showModal()" />
             <Button :tag="PhDownloadSimple" />
-            <Button :tag="PhFileArrowDown" />
             <Button :tag="PhSelection" />
             <Button :tag="PhArrowClockwise" />
             <Button :tag="PhTrashSimple" />
@@ -19,15 +19,21 @@ import list from './public/list.json'
         </div>
     </nav>
 
-    <div id="new_list">
-        <h2>Elements</h2>
+    <dialog id="list">
+        <div id="list_top">
+            <h2>Elements</h2>
+            <button id="list_close" onclick="list.close()">
+                <PhX :size="26" color="#fff" weight="bold" />
+            </button>
+        </div>
+
         <div v-for="item in list.items" :key="item.id">
             <h3>{{ item.title }}</h3>
             <p>{{ item.width }}cm</p>
         </div>
-    </div>
+    </dialog>
 
-    <div class="canvas">
+    <div id="canvas">
         <Truss v-for="item in list.items" :width="item.width" />
     </div>
 </template>
@@ -42,7 +48,7 @@ nav {
 }
 
 h2 {
-    margin-top: 0;
+    margin: 0;
 }
 
 #new_buttons {
@@ -55,32 +61,33 @@ h2 {
     gap: 100px;
 }
 
-#new_list {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+#list {
     background-color: var(--gray);
-    border-radius: 0 12px 12px 0;
+    color: white;
+    border: none;
+    border-radius: 12px;
     padding: 15px;
-    width: 30px;
+    width: 60%;
     height: 70%;
-
-    transition-property: width;
-    transition-duration: 400ms;
-    transition-timing-function: ease;
-}
-
-#new_list > * {
-    display: none;
-}
-
-#new_list:hover {
-    width: 330px;
-    overflow: scroll;
     scrollbar-width: none;
 }
 
-#new_list:hover > * {
-    display: block;
+#list_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+#list_close {
+    background-color: transparent;
+    border: none;
+    border-radius: 50px;
+    padding: 6px;
+    height: 38px;
+    cursor: pointer;
+}
+
+#list_close:hover {
+    background-color: #707070;
 }
 </style>
