@@ -1,0 +1,59 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "title": "Truss 4m",
+      "width": 400
+    },
+    {
+      "id": 2,
+      "title": "Truss 3m",
+      "width": 300
+    },
+    {
+      "id": 3,
+      "title": "Truss 2,5m",
+      "width": 250
+    },
+    {
+      "id": 4,
+      "title": "Truss 2m",
+      "width": 200
+    },
+    {
+      "id": 5,
+      "title": "Truss 1,5m",
+      "width": 150
+    },
+    {
+      "id": 6,
+      "title": "Truss 1m",
+      "width": 100
+    },
+    {
+      "id": 7,
+      "title": "Truss 71cm",
+      "width": 71
+    },
+    {
+      "id": 8,
+      "title": "Truss 50cm",
+      "width": 50
+    },
+    {
+      "id": 9,
+      "title": "Truss 29cm",
+      "width": 29
+    },
+    {
+      "id": 10,
+      "title": "Truss 25cm",
+      "width": 25
+    },
+    {
+      "id": 11,
+      "title": "Truss 7cm",
+      "width": 7
+    }
+  ]
+}

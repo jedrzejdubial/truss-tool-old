@@ -1,5 +1,6 @@
 <script setup>
 import { PhDownloadSimple, PhFileArrowDown, PhSelection, PhArrowClockwise, PhTrashSimple } from '@phosphor-icons/vue'
+import list from './public/list.json'
 </script>
 
 <template>
@@ -20,6 +21,14 @@ import { PhDownloadSimple, PhFileArrowDown, PhSelection, PhArrowClockwise, PhTra
 
     <div id="new_list">
         <h2>Elements</h2>
+        <div v-for="item in list.items" :key="item.id">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.width }}cm</p>
+        </div>
+    </div>
+
+    <div class="canvas">
+        <Truss v-for="item in list.items" :width="item.width" />
     </div>
 </template>
 
@@ -68,6 +77,7 @@ h2 {
 #new_list:hover {
     width: 330px;
     overflow: scroll;
+    scrollbar-width: none;
 }
 
 #new_list:hover > * {
