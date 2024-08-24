@@ -5,10 +5,22 @@
     --gray: #3A3A3A;
 }
 
+* {
+    color: white;
+}
+
 body {
     background-color: var(--black);
-    color: white;
     font-family: 'Inter', Helvetica, Arial, sans-serif;
     overflow: hidden;
     margin: 0;
+}
+
+h2 {
+    margin: 0;
+}
+
+button {
+    border: none;
+    cursor: pointer;
 }

@@ -3,21 +3,21 @@ import { PhFilePlus } from '@phosphor-icons/vue'
 </script>
 
 <template>
-    <div id="main_wrap">
+    <div>
         <h1>Welcome to Truss Tool</h1>
-        <Button title="Create a new project" :tag="PhFilePlus" path="/new" />
+        <Button :tag="PhFilePlus" path="/new" />
+        <p>Create a new project</p>
     </div>
 </template>
 
-<style>
+<style scoped>
 @import url("~/assets/css/styles.css");
 
-#main_wrap {
+div {
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-sizing: border;
 }
 </style>

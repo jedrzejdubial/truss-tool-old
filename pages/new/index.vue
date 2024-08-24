@@ -6,11 +6,11 @@ import list from './public/list.json'
 <template>
     <nav>
         <div id="new_buttons">
-            <Button :tag="PhResize" onclick="list.showModal()" />
-            <Button :tag="PhDownloadSimple" />
-            <Button :tag="PhSelection" />
-            <Button :tag="PhArrowClockwise" />
-            <Button :tag="PhTrashSimple" />
+            <Button title="Show Menu" :tag="PhResize" onclick="list.showModal()" />
+            <Button title="Download image" :tag="PhDownloadSimple" />
+            <Button title="Deselect truss" :tag="PhSelection" />
+            <Button title="Rotate truss" :tag="PhArrowClockwise" />
+            <Button title="Delete truss" :tag="PhTrashSimple" />
         </div>
 
         <div id="new_info">
@@ -27,9 +27,8 @@ import list from './public/list.json'
             </button>
         </div>
 
-        <div v-for="item in list.items" :key="item.id">
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.width }}cm</p>
+        <div id="list_bottom">
+            <ListButton v-for="item in list.items" :item="item" />
         </div>
     </dialog>
 
@@ -43,13 +42,10 @@ import list from './public/list.json'
 
 nav {
     display: flex;
-    padding: 12px;
     justify-content: space-between;
+    padding: 12px;
 }
 
-h2 {
-    margin: 0;
-}
 
 #new_buttons {
     display: flex;
@@ -63,9 +59,8 @@ h2 {
 
 #list {
     background-color: var(--gray);
-    color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: 20px;
     padding: 15px;
     width: 60%;
     height: 70%;
@@ -80,14 +75,18 @@ h2 {
 
 #list_close {
     background-color: transparent;
-    border: none;
     border-radius: 50px;
     padding: 6px;
     height: 38px;
-    cursor: pointer;
 }
 
 #list_close:hover {
     background-color: #707070;
+}
+
+#list_bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 8px;
 }
 </style>
