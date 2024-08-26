@@ -1,39 +1,39 @@
 <script setup>
-import { PhResize, PhDownloadSimple, PhSelection, PhArrowClockwise, PhTrashSimple, PhX } from '@phosphor-icons/vue'
+import { PhResize, PhDownloadSimple, PhX } from '@phosphor-icons/vue'
 import list from './public/list.json'
+
+const trusses = ref([])
+
+function addTruss(width) {
+  trusses.value.push({ width: width })
+}
+
+function removeTruss(index) {
+  trusses.value.splice(index, 1)
+}
 </script>
 
 <template>
     <nav>
-        <div id="new_buttons">
-            <Button title="Show Menu" :tag="PhResize" onclick="list.showModal()" />
-            <Button title="Download image" :tag="PhDownloadSimple" />
-            <Button title="Deselect truss" :tag="PhSelection" />
-            <Button title="Rotate truss" :tag="PhArrowClockwise" />
-            <Button title="Delete truss" :tag="PhTrashSimple" />
-        </div>
-
-        <div id="new_info">
-            <h2>[] connectors</h2>
-            <h2>Elements list:</h2>
-        </div>
+        <Button title="Show Menu" :tag="PhResize" onclick="list.showModal()" />
+        <Button title="Download image" :tag="PhDownloadSimple" />
     </nav>
 
     <dialog id="list">
         <div id="list_top">
             <h2>Elements</h2>
             <button id="list_close" onclick="list.close()">
-                <PhX :size="26" color="#fff" weight="bold" />
+                <PhX :size="26" weight="bold" />
             </button>
         </div>
 
         <div id="list_bottom">
-            <ListButton v-for="item in list.items" :item="item" />
+            <ListButton v-for="item in list.items" :item="item" @click="() => addTruss(item.width)" />
         </div>
     </dialog>
 
     <div id="canvas">
-        <Truss v-for="item in list.items" :width="item.width" />
+        <Truss v-for="(truss, index) in trusses" :width="truss.width" @remove="removeTruss(index)" :key="index" />
     </div>
 </template>
 
@@ -42,19 +42,8 @@ import list from './public/list.json'
 
 nav {
     display: flex;
-    justify-content: space-between;
-    padding: 12px;
-}
-
-
-#new_buttons {
-    display: flex;
     gap: 12px;
-}
-
-#new_info {
-    display: flex;
-    gap: 100px;
+    padding: 12px;
 }
 
 #list {
