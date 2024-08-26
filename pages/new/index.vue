@@ -16,7 +16,7 @@ function removeTruss(index) {
 <template>
     <nav>
         <Button title="Show Menu" :tag="PhResize" onclick="list.showModal()" />
-        <Button title="Download image" :tag="PhDownloadSimple" />
+        <p>{{ trusses }}</p>
     </nav>
 
     <dialog id="list">
@@ -28,7 +28,7 @@ function removeTruss(index) {
         </div>
 
         <div id="list_bottom">
-            <ListButton v-for="item in list.items" :item="item" @click="() => addTruss(item.width)" />
+            <ListButton v-for="(item, index) in list.items" :item="item" @click="() => addTruss(item.width)" :key="index" />
         </div>
     </dialog>
 

@@ -5,8 +5,8 @@ const props = defineProps({
 </script>
 
 <template>
-    <button :key="props.item.id" >
-        <img :src="'/truss/truss' + props.item.width + '.jpg'" />
+    <button>
+        <img :src="'/truss/' + props.item.id + '.jpg'" />
         <div>
             <h2>{{ props.item.title }}</h2>
             <p>{{ props.item.width }}x29cm</p>

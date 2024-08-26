@@ -1,70 +1,76 @@
 {
   "items": [
     {
-      "id": 1,
+      "id": "400",
       "title": "Truss 4m",
       "width": 400,
       "weight": 21
     },
     {
-      "id": 2,
+      "id": "300",
       "title": "Truss 3m",
       "width": 300,
       "weight": 16
     },
     {
-      "id": 3,
+      "id": "250",
       "title": "Truss 2,5m",
       "width": 250,
       "weight": 14
     },
     {
-      "id": 4,
+      "id": "200",
       "title": "Truss 2m",
       "width": 200,
       "weight": 12
     },
     {
-      "id": 5,
+      "id": "150",
       "title": "Truss 1,5m",
       "width": 150,
       "weight": 9.7
     },
     {
-      "id": 6,
+      "id": "100",
       "title": "Truss 1m",
       "width": 100,
       "weight": 7.5
     },
     {
-      "id": 7,
+      "id": "71",
       "title": "Truss 71cm",
       "width": 71,
       "weight": 6.8
     },
     {
-      "id": 8,
+      "id": "50",
       "title": "Truss 50cm",
       "width": 50,
       "weight": 4.9
     },
     {
-      "id": 9,
+      "id": "29",
       "title": "Truss 29cm",
       "width": 29,
       "weight": 3
     },
     {
-      "id": 10,
+      "id": "25",
       "title": "Truss 25cm",
       "width": 25,
       "weight": 2.9
     },
     {
-      "id": 11,
+      "id": "7",
       "title": "Truss 7cm",
       "width": 7,
       "weight": 0.5
+    },
+    {
+      "id": "cornerbox",
+      "title": "Cornerbox",
+      "width": 29,
+      "weight": 5.56
     }
   ]
 }
