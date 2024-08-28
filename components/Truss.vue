@@ -13,7 +13,7 @@ const position = ref({ x: 100, y: 100 })
 const isDragging = ref(false)
 const startPosition = ref({ x: 0, y: 0 })
 
-function toggleHidden() {
+function toggleActions() {
   hidden.value = hidden.value === '' ? 'hidden' : ''
 }
 
@@ -23,25 +23,17 @@ function rotate() {
 
 function remove() {
   // Hides truss_actions on delete
-  toggleHidden()
+  toggleActions()
   emit('remove')
 }
 
 function startDrag(event) {
   isDragging.value = true
-  startPosition.value = {
-    x: event.clientX - position.value.x,
-    y: event.clientY - position.value.y
-  }
+  startPosition.value = { x: event.clientX - position.value.x, y: event.clientY - position.value.y }
 }
 
 function onDrag(e) {
-  if(isDragging.value) {
-    position.value = {
-      x: e.clientX - startPosition.value.x,
-      y: e.clientY - startPosition.value.y
-    }
-  }
+  if(isDragging.value) position.value = { x: e.clientX - startPosition.value.x, y: e.clientY - startPosition.value.y }
 }
 
 function stopDrag() {
@@ -50,16 +42,21 @@ function stopDrag() {
 </script>
 
 <template>
-    <div :style="{ width: props.width + 'px', transform: `rotate(${rotation}deg)`, position: 'absolute', left: `${position.x}px`, top: `${position.y}px` }">
-        <div class="truss_actions">
+    <div :style="{
+      width: props.width + 'px',
+      transform: `rotate(${rotation}deg)`,
+      position: 'absolute',
+      left: `${position.x}px`,
+      top: `${position.y}px` }">
+        <div class="actions">
             <Button title="Rotate" :tag="PhArrowClockwise" width="29" height="29" iconSize="15" :class="hidden" @click="rotate" />
             <Button title="Remove" :tag="PhTrashSimple" width="29" height="29" iconSize="15" :class="hidden" @click="remove" />
         </div>
 
         <div
-            class="truss"
+            class="element"
             :style="{ cursor: isDragging ? 'grabbing' : 'grab' }"
-            @click.right.prevent="toggleHidden"
+            @click.right.prevent="toggleActions"
             @mousedown.prevent="startDrag"
             @mousemove.prevent="onDrag"
             @mouseup.prevent="stopDrag"
@@ -70,14 +67,14 @@ function stopDrag() {
 </template>
 
 <style scoped>
-.truss_actions {
+.actions {
     height: 29px;
     display: flex;
     justify-content: center;
     gap: 10px;
 }
 
-.truss {
+.element {
     height: 29px;
     background-color: gray;
     text-align: center;

@@ -1,21 +1,24 @@
 <script setup>
-import { PhResize, PhDownloadSimple, PhX } from '@phosphor-icons/vue'
+import { PhResize, PhX } from '@phosphor-icons/vue'
 import list from './public/list.json'
 
 const trusses = ref([])
+let nextId = 0
 
 function addTruss(width) {
-  trusses.value.push({ width: width })
+  trusses.value.push({ width: width, id: nextId++ })
 }
 
-function removeTruss(index) {
-  trusses.value.splice(index, 1)
+function removeTruss(id) {
+  const index = trusses.value.findIndex(truss => truss.id === id)
+  if(index !== -1) trusses.value.splice(index, 1)
 }
 </script>
 
 <template>
     <nav>
         <Button title="Show Menu" :tag="PhResize" onclick="list.showModal()" />
+        <!-- debugging -->
         <p>{{ trusses }}</p>
     </nav>
 
@@ -33,7 +36,7 @@ function removeTruss(index) {
     </dialog>
 
     <div id="canvas">
-        <Truss v-for="(truss, index) in trusses" :width="truss.width" @remove="removeTruss(index)" :key="index" />
+        <Truss v-for="truss in trusses" :width="truss.width" @remove="removeTruss(truss.id)" :key="truss.id" />
     </div>
 </template>
 
