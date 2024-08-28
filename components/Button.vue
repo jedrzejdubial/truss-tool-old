@@ -25,4 +25,8 @@ button {
     border-radius: 8px;
     background-color: var(--gray);
 }
+
+button:hover {
+    background-color: #424242;
+}
 </style>

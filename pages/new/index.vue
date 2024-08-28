@@ -1,43 +1,49 @@
 <script setup>
-import { PhResize, PhX } from '@phosphor-icons/vue'
+import { PhResize, PhListNumbers } from '@phosphor-icons/vue'
 import list from './public/list.json'
 
 const trusses = ref([])
 let nextId = 0
 
-function addTruss(width) {
-  trusses.value.push({ width: width, id: nextId++ })
+function addTruss(item) {
+  trusses.value.push({ ...item, id: nextId++ })
 }
 
 function removeTruss(id) {
   const index = trusses.value.findIndex(truss => truss.id === id)
   if(index !== -1) trusses.value.splice(index, 1)
 }
+
+const trussCount = computed (() => {
+  const counts = {}
+  trusses.value.forEach(truss => {
+    counts[truss.title] = (counts[truss.title] || 0) + 1
+  })
+  return Object.entries(counts)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([title, count]) => `${count}x ${title}`)
+})
 </script>
 
 <template>
     <nav>
-        <Button title="Show Menu" :tag="PhResize" onclick="list.showModal()" />
-        <!-- debugging -->
-        <p>{{ trusses }}</p>
+        <Button title="Show menu" :tag="PhResize" onclick="list.showModal()" />
+        <Button title="Show details" :tag="PhListNumbers" onclick="details.showModal()" />
     </nav>
-
-    <dialog id="list">
-        <div id="list_top">
-            <h2>Elements</h2>
-            <button id="list_close" onclick="list.close()">
-                <PhX :size="26" weight="bold" />
-            </button>
-        </div>
-
-        <div id="list_bottom">
-            <ListButton v-for="(item, index) in list.items" :item="item" @click="() => addTruss(item.width)" :key="index" />
-        </div>
-    </dialog>
 
     <div id="canvas">
         <Truss v-for="truss in trusses" :width="truss.width" @remove="removeTruss(truss.id)" :key="truss.id" />
     </div>
+
+    <Dialog title="Elements" id="list">
+        <div id="list_bottom">
+            <ListButton v-for="(item, index) in list.items" :item="item" @click="() => addTruss(item)" :key="index" />
+        </div>
+    </Dialog>
+
+    <Dialog title="Details" id="details">
+        <p v-for="(item, index) in trussCount" :key="index">{{ item }}</p>
+    </Dialog>
 </template>
 
 <style>
@@ -47,33 +53,6 @@ nav {
     display: flex;
     gap: 12px;
     padding: 12px;
-}
-
-#list {
-    background-color: var(--gray);
-    border: none;
-    border-radius: 20px;
-    padding: 15px;
-    width: 60%;
-    height: 70%;
-    scrollbar-width: none;
-}
-
-#list_top {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-}
-
-#list_close {
-    background-color: transparent;
-    border-radius: 50px;
-    padding: 6px;
-    height: 38px;
-}
-
-#list_close:hover {
-    background-color: #707070;
 }
 
 #list_bottom {
