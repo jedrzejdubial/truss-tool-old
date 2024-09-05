@@ -6,7 +6,7 @@ const props = defineProps({
 
 <template>
     <button>
-        <img :src="'/truss/' + props.item.id + '.jpg'" />
+        <img :src="'/truss/' + props.item.id + '.jpg'" :alt="`truss_` + props.item.id" />
         <div>
             <h2>{{ props.item.title }}</h2>
             <p>{{ props.item.width }}x29cm</p>

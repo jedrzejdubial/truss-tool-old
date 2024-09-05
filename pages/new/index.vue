@@ -14,7 +14,7 @@ function removeTruss(id) {
   if(index !== -1) trusses.value.splice(index, 1)
 }
 
-const trussCount = computed (() => {
+const trussCount = computed(() => {
   const counts = {}
   trusses.value.forEach(truss => {
     counts[truss.title] = (counts[truss.title] || 0) + 1

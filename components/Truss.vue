@@ -24,6 +24,7 @@ function rotate() {
 function remove() {
   // Hides truss_actions on delete
   toggleActions()
+  // Uses :remove emit to get function for removing truss
   emit('remove')
 }
 
@@ -49,8 +50,8 @@ function stopDrag() {
       left: `${position.x}px`,
       top: `${position.y}px` }">
         <div class="actions">
-            <Button title="Rotate" :tag="PhArrowClockwise" width="29" height="29" iconSize="15" :class="hidden" @click="rotate" />
-            <Button title="Remove" :tag="PhTrashSimple" width="29" height="29" iconSize="15" :class="hidden" @click="remove" />
+            <Button title="Rotate" :tag="PhArrowClockwise" :width="29" :height="29" :iconSize="15" :class="hidden" @click="rotate" />
+            <Button title="Remove" :tag="PhTrashSimple" :width="29" :height="29" :iconSize="15" :class="hidden" @click="remove" />
         </div>
 
         <div
