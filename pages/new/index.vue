@@ -1,5 +1,6 @@
 <script setup>
-import { PhResize, PhListNumbers } from '@phosphor-icons/vue'
+import html2canvas from 'html2canvas'
+import { PhResize, PhListNumbers, PhDownloadSimple } from '@phosphor-icons/vue'
 import list from './public/list.json'
 
 const trusses = ref([])
@@ -23,12 +24,35 @@ const trussCount = computed(() => {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([title, count]) => `${count}x ${title}`)
 })
+
+async function download() {
+  const canvas = document.querySelector('#canvas')
+
+  if(!canvas) {
+    console.error('Canvas element not found')
+    return
+  }
+
+  try {
+    const image = await html2canvas(canvas)
+
+    console.log('Image captured, dimensions:', image.width, 'x', image.height)
+
+    const link = document.createElement('a')
+    link.download = 'truss_tool-image.png'
+    link.href = image.toDataURL('image/png')
+    link.click()
+  } catch(error) {
+    console.error(error)
+  }
+}
 </script>
 
 <template>
     <nav>
         <Button title="Show menu" :tag="PhResize" onclick="list.showModal()" />
         <Button title="Show details" :tag="PhListNumbers" onclick="details.showModal()" />
+        <Button title="Download an image of current canvas" :tag="PhDownloadSimple" @click="download" />
     </nav>
 
     <div id="canvas">
@@ -59,5 +83,10 @@ nav {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     margin-top: 8px;
+}
+
+#canvas {
+  background-color: var(--black);
+  height: calc(100vh - 88px);
 }
 </style>
