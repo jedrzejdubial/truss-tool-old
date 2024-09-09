@@ -9,9 +9,7 @@ const emit = defineEmits(['remove'])
 
 const hidden = ref('hidden')
 const rotation = ref(0)
-const position = ref({ x: 100, y: 100 })
-const isDragging = ref(false)
-const startPosition = ref({ x: 0, y: 0 })
+const position = ref({ x: 25, y: 75 })
 
 function toggleActions() {
   hidden.value = hidden.value === '' ? 'hidden' : ''
@@ -28,23 +26,14 @@ function remove() {
   emit('remove')
 }
 
-function startDrag(event) {
-  isDragging.value = true
-  startPosition.value = { x: event.clientX - position.value.x, y: event.clientY - position.value.y }
-}
-
-function onDrag(e) {
-  if(isDragging.value) position.value = { x: e.clientX - startPosition.value.x, y: e.clientY - startPosition.value.y }
-}
-
-function stopDrag() {
-  isDragging.value = false
+function edge() {
+  list.showModal()
 }
 </script>
 
 <template>
     <div :style="{
-      width: props.width + 'px',
+      width: props.width + 40 + 'px',
       transform: `rotate(${rotation}deg)`,
       position: 'absolute',
       left: `${position.x}px`,
@@ -54,20 +43,25 @@ function stopDrag() {
             <Button title="Remove" :tag="PhTrashSimple" :width="29" :height="29" :iconSize="15" :class="hidden" @click="remove" />
         </div>
 
-        <div
-            class="element"
-            :style="{ cursor: isDragging ? 'grabbing' : 'grab' }"
-            @click.right.prevent="toggleActions"
-            @mousedown.prevent="startDrag"
-            @mousemove.prevent="onDrag"
-            @mouseup.prevent="stopDrag"
-            @mouseleave.prevent="stopDrag">
-            <p>{{ props.width }}</p>
+        <div class="element_wrap" :style="{ width: props.width + 40 + 'px' }">
+            <div class="edge" @click="edge"></div>
+            <div
+                class="element"
+                :style="{ width: props.width + 'px' }"
+                @click.right.prevent="toggleActions">
+              <p>{{ props.width }}</p>
+            </div>
+            <div class="edge" @click="edge"></div>
         </div>
     </div>
 </template>
 
 <style scoped>
+.element_wrap {
+  display: flex;
+  cursor: pointer;
+}
+
 .actions {
     height: 29px;
     display: flex;
@@ -83,6 +77,11 @@ function stopDrag() {
 
 p {
     margin: 0;
+}
+
+.edge {
+  background-color: pink;
+  width: 20px;
 }
 
 .hidden {
