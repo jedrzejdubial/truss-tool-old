@@ -2,14 +2,16 @@
 import { PhArrowClockwise, PhTrashSimple } from '@phosphor-icons/vue'
 
 const props = defineProps({
-  width: Number
+  width: Number,
+  id: Number,
+  x: Number,
+  y: Number
 })
 
-const emit = defineEmits(['remove'])
+const emit = defineEmits(['remove', 'addAdjacent'])
 
 const hidden = ref('hidden')
 const rotation = ref(0)
-const position = ref({ x: 25, y: 75 })
 
 function toggleActions() {
   hidden.value = hidden.value === '' ? 'hidden' : ''
@@ -26,8 +28,8 @@ function remove() {
   emit('remove')
 }
 
-function edge() {
-  list.showModal()
+function edge(side) {
+  emit('addAdjacent', { side, id: props.id })
 }
 </script>
 
@@ -36,28 +38,28 @@ function edge() {
       width: props.width + 40 + 'px',
       transform: `rotate(${rotation}deg)`,
       position: 'absolute',
-      left: `${position.x}px`,
-      top: `${position.y}px` }">
+      left: `${props.x}px`,
+      top: `${props.y}px` }">
         <div class="actions">
             <Button title="Rotate" :tag="PhArrowClockwise" :width="29" :height="29" :iconSize="15" :class="hidden" @click="rotate" />
             <Button title="Remove" :tag="PhTrashSimple" :width="29" :height="29" :iconSize="15" :class="hidden" @click="remove" />
         </div>
 
-        <div class="element_wrap" :style="{ width: props.width + 40 + 'px' }">
-            <div class="edge" @click="edge"></div>
+        <div class="truss" :id="`truss-${id}`" :style="{ width: props.width + 40 + 'px' }"> <!--element_wrap -->
+            <button class="edge left" @click="() => edge('left')"></button>
             <div
                 class="element"
                 :style="{ width: props.width + 'px' }"
                 @click.right.prevent="toggleActions">
               <p>{{ props.width }}</p>
             </div>
-            <div class="edge" @click="edge"></div>
+            <button class="edge right" @click="() => edge('right')"></button>
         </div>
     </div>
 </template>
 
 <style scoped>
-.element_wrap {
+.truss {
   display: flex;
   cursor: pointer;
 }
@@ -80,7 +82,7 @@ p {
 }
 
 .edge {
-  background-color: pink;
+  background-color: #1919cc;
   width: 20px;
 }
 

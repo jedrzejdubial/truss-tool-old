@@ -6,8 +6,12 @@ import list from './public/list.json'
 const trusses = ref([])
 let nextId = 0
 
+const listDialogRef = ref(null)
+const parentTruss = ref(null)
+const selectedSide = ref(null)
+
 function addTruss(item) {
-  trusses.value.push({ ...item, id: nextId++ })
+  trusses.value.push({ ...item, id: nextId++, x: 25, y: 75 /* Default position */ })
 }
 
 function removeTruss(id) {
@@ -46,24 +50,77 @@ async function download() {
     console.error(error)
   }
 }
+
+function openListDialog(trussId, side) {
+  // Get parent element
+  parentTruss.value = trusses.value.find(t => t.id === trussId)
+
+  selectedSide.value = side
+  listDialogRef.value.showModal()
+}
+
+function addAdjacentTruss(item) {
+  if(parentTruss.value && selectedSide.value) {
+    const index = trusses.value.findIndex(t => t.id === parentTruss.value.id)
+    const newTruss = { ...item, id: nextId++ }
+
+    if(selectedSide.value === 'left') {
+      newTruss.x = parentTruss.value.x - item.width - 40
+      newTruss.y = parentTruss.value.y
+      trusses.value.splice(index, 0, newTruss)
+    } else if(selectedSide.value === 'right') {
+      newTruss.x = parentTruss.value.x + parentTruss.value.width + 40
+      newTruss.y = parentTruss.value.y
+      trusses.value.splice(index + 1, 0, newTruss)
+    }
+
+    // Close dialog after picking truss
+    listDialogRef.value.close()
+
+    // Clear out the data
+    parentTruss.value = null
+    selectedSide.value = null
+  }
+}
 </script>
 
 <template>
     <nav>
-        <Button title="Show menu" :tag="PhResize" onclick="list.showModal()" />
+        <Button title="Show menu" :tag="PhResize" @click="openListDialog(null, null)" />
         <Button title="Show details" :tag="PhListNumbers" onclick="details.showModal()" />
         <Button title="Download an image of current canvas" :tag="PhDownloadSimple" @click="download" />
     </nav>
 
     <div id="canvas">
-        <Truss v-for="truss in trusses" :width="truss.width" @remove="removeTruss(truss.id)" :key="truss.id" />
+        <Truss
+            v-for="truss in trusses"
+            :width="truss.width"
+            :x="truss.x" :y="truss.y"
+            @remove="removeTruss(truss.id)"
+            @addAdjacent="({ side, id }) => openListDialog(id, side)"
+            :id="truss.id"
+            :key="truss.id" />
     </div>
 
     <Dialog title="Elements" id="list">
         <div id="list_bottom">
-            <ListButton v-for="(item, index) in list.items" :item="item" @click="() => addTruss(item)" :key="index" />
+            <ListButton
+                v-for="(item, index) in list.items"
+                :item="item"
+                @click="() => parentTruss ? addAdjacentTruss(item) : addTruss(item)"
+                :key="index" />
         </div>
     </Dialog>
+
+    <dialog ref="listDialogRef">
+      <div id="list_bottom">
+        <ListButton
+            v-for="(item, index) in list.items"
+            :item="item"
+            @click="() => parentTruss ? addAdjacentTruss(item) : addTruss(item)"
+            :key="index" />
+      </div>
+    </dialog>
 
     <Dialog title="Details" id="details">
         <p v-for="(item, index) in trussCount" :key="index">{{ item }}</p>
