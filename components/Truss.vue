@@ -13,23 +13,20 @@ const emit = defineEmits(['remove', 'addAdjacent'])
 const hidden = ref('hidden')
 const rotation = ref(0)
 
-function toggleActions() {
-  hidden.value = hidden.value === '' ? 'hidden' : ''
-}
-
 function rotate() {
   rotation.value += 90
 }
 
 function remove() {
-  // Hides truss_actions on delete
-  toggleActions()
-  // Uses :remove emit to get function for removing truss
   emit('remove')
 }
 
 function edge(side) {
   emit('addAdjacent', { side, id: props.id })
+}
+
+function toggleActions() {
+  hidden.value = hidden.value === '' ? 'hidden' : ''
 }
 </script>
 
@@ -40,9 +37,9 @@ function edge(side) {
       position: 'absolute',
       left: `${props.x}px`,
       top: `${props.y}px` }">
-        <div class="actions">
-            <Button title="Rotate" :tag="PhArrowClockwise" :width="29" :height="29" :iconSize="15" :class="hidden" @click="rotate" />
-            <Button title="Remove" :tag="PhTrashSimple" :width="29" :height="29" :iconSize="15" :class="hidden" @click="remove" />
+        <div class="actions" :class="hidden">
+            <Button title="Rotate" :tag="PhArrowClockwise" :width="29" :height="29" :iconSize="15" @click="rotate" />
+            <Button title="Remove" :tag="PhTrashSimple" :width="29" :height="29" :iconSize="15" @click="remove" />
         </div>
 
         <div class="truss" :id="`truss-${id}`" :style="{ width: props.width + 40 + 'px' }"> <!--element_wrap -->
@@ -87,6 +84,6 @@ p {
 }
 
 .hidden {
-    display: none;
+    opacity: 0;
 }
 </style>

@@ -1,12 +1,11 @@
 <script setup>
 import html2canvas from 'html2canvas'
-import { PhResize, PhListNumbers, PhDownloadSimple } from '@phosphor-icons/vue'
+import { PhPlus, PhListNumbers, PhDownloadSimple } from '@phosphor-icons/vue'
 import list from './public/list.json'
 
 const trusses = ref([])
 let nextId = 0
 
-const listDialogRef = ref(null)
 const parentTruss = ref(null)
 const selectedSide = ref(null)
 
@@ -32,15 +31,8 @@ const trussCount = computed(() => {
 async function download() {
   const canvas = document.querySelector('#canvas')
 
-  if(!canvas) {
-    console.error('Canvas element not found')
-    return
-  }
-
   try {
     const image = await html2canvas(canvas)
-
-    console.log('Image captured, dimensions:', image.width, 'x', image.height)
 
     const link = document.createElement('a')
     link.download = 'truss_tool-image.png'
@@ -56,7 +48,7 @@ function openListDialog(trussId, side) {
   parentTruss.value = trusses.value.find(t => t.id === trussId)
 
   selectedSide.value = side
-  listDialogRef.value.showModal()
+  listDialog.showModal()
 }
 
 function addAdjacentTruss(item) {
@@ -72,10 +64,19 @@ function addAdjacentTruss(item) {
       newTruss.x = parentTruss.value.x + parentTruss.value.width + 40
       newTruss.y = parentTruss.value.y
       trusses.value.splice(index + 1, 0, newTruss)
+
+      /* const edgeRightParent = document.querySelector(`#truss-${parentTruss.value.id} .edge.right`)
+      const edgeLeftChild = document.querySelector(`#truss-${newTruss.id} .edge.left`)
+      console.log(newTruss.id)
+      edgeRightParent.remove()
+
+      edgeLeftChild.remove() */
+      // document.querySelector('.edge.right').remove()
+      // removeTruss(parentTruss.value.id)
     }
 
     // Close dialog after picking truss
-    listDialogRef.value.close()
+    listDialog.close()
 
     // Clear out the data
     parentTruss.value = null
@@ -86,9 +87,10 @@ function addAdjacentTruss(item) {
 
 <template>
     <nav>
-        <Button title="Show menu" :tag="PhResize" @click="openListDialog(null, null)" />
+        <Button title="Add truss" :tag="PhPlus" @click="openListDialog(null, null)" />
         <Button title="Show details" :tag="PhListNumbers" onclick="details.showModal()" />
         <Button title="Download an image of current canvas" :tag="PhDownloadSimple" @click="download" />
+        <p>{{ trusses }}</p> <!-- Debugging -->
     </nav>
 
     <div id="canvas">
@@ -102,7 +104,7 @@ function addAdjacentTruss(item) {
             :key="truss.id" />
     </div>
 
-    <Dialog title="Elements" id="list">
+    <Dialog title="Elements" id="listDialog">
         <div id="list_bottom">
             <ListButton
                 v-for="(item, index) in list.items"
@@ -111,16 +113,6 @@ function addAdjacentTruss(item) {
                 :key="index" />
         </div>
     </Dialog>
-
-    <dialog ref="listDialogRef">
-      <div id="list_bottom">
-        <ListButton
-            v-for="(item, index) in list.items"
-            :item="item"
-            @click="() => parentTruss ? addAdjacentTruss(item) : addTruss(item)"
-            :key="index" />
-      </div>
-    </dialog>
 
     <Dialog title="Details" id="details">
         <p v-for="(item, index) in trussCount" :key="index">{{ item }}</p>
