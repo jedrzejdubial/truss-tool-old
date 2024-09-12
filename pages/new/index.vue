@@ -11,6 +11,8 @@ const selectedSide = ref(null)
 
 function addTruss(item) {
   trusses.value.push({ ...item, id: nextId++, x: 25, y: 75 /* Default position */ })
+  listDialog.close()
+  document.querySelector('#addTruss').remove()
 }
 
 function removeTruss(id) {
@@ -33,8 +35,8 @@ async function download() {
 
   try {
     const image = await html2canvas(canvas)
-
     const link = document.createElement('a')
+
     link.download = 'truss_tool-image.png'
     link.href = image.toDataURL('image/png')
     link.click()
@@ -57,22 +59,13 @@ function addAdjacentTruss(item) {
     const newTruss = { ...item, id: nextId++ }
 
     if(selectedSide.value === 'left') {
-      newTruss.x = parentTruss.value.x - item.width - 40
+      newTruss.x = parentTruss.value.x - item.width - 10
       newTruss.y = parentTruss.value.y
       trusses.value.splice(index, 0, newTruss)
     } else if(selectedSide.value === 'right') {
-      newTruss.x = parentTruss.value.x + parentTruss.value.width + 40
+      newTruss.x = parentTruss.value.x + parentTruss.value.width + 10
       newTruss.y = parentTruss.value.y
       trusses.value.splice(index + 1, 0, newTruss)
-
-      /* const edgeRightParent = document.querySelector(`#truss-${parentTruss.value.id} .edge.right`)
-      const edgeLeftChild = document.querySelector(`#truss-${newTruss.id} .edge.left`)
-      console.log(newTruss.id)
-      edgeRightParent.remove()
-
-      edgeLeftChild.remove() */
-      // document.querySelector('.edge.right').remove()
-      // removeTruss(parentTruss.value.id)
     }
 
     // Close dialog after picking truss
@@ -87,10 +80,9 @@ function addAdjacentTruss(item) {
 
 <template>
     <nav>
-        <Button title="Add truss" :tag="PhPlus" @click="openListDialog(null, null)" />
+        <Button title="Add truss" id="addTruss" :tag="PhPlus" onclick="listDialog.showModal()" />
         <Button title="Show details" :tag="PhListNumbers" onclick="details.showModal()" />
-        <Button title="Download an image of current canvas" :tag="PhDownloadSimple" @click="download" />
-        <p>{{ trusses }}</p> <!-- Debugging -->
+        <Button title="Download an image of current canvas" :tag="PhDownloadSimple" @click="download" /> <!-- Doesn't work on Linux, works on Mac (???) -->
     </nav>
 
     <div id="canvas">

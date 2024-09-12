@@ -32,7 +32,7 @@ function toggleActions() {
 
 <template>
     <div :style="{
-      width: props.width + 40 + 'px',
+      width: props.width + 10 + 'px',
       transform: `rotate(${rotation}deg)`,
       position: 'absolute',
       left: `${props.x}px`,
@@ -42,7 +42,7 @@ function toggleActions() {
             <Button title="Remove" :tag="PhTrashSimple" :width="29" :height="29" :iconSize="15" @click="remove" />
         </div>
 
-        <div class="truss" :id="`truss-${id}`" :style="{ width: props.width + 40 + 'px' }"> <!--element_wrap -->
+        <div class="truss" :id="`truss-${id}`" :style="{ width: props.width + 10 + 'px' }"> <!--element_wrap -->
             <button class="edge left" @click="() => edge('left')"></button>
             <div
                 class="element"
@@ -80,7 +80,8 @@ p {
 
 .edge {
   background-color: #1919cc;
-  width: 20px;
+  width: 5px;
+  padding: 0;
 }
 
 .hidden {
