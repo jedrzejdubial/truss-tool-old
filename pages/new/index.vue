@@ -12,7 +12,10 @@ const selectedSide = ref(null)
 function addTruss(item) {
   trusses.value.push({ ...item, id: nextId++, x: 25, y: 75 /* Default position */ })
   listDialog.close()
-  document.querySelector('#addTruss').remove()
+
+  // Remove .startProject welcome screen
+  document.querySelector('#canvas').classList.remove('center')
+  document.querySelector('.startProject').remove()
 }
 
 function removeTruss(id) {
@@ -59,11 +62,11 @@ function addAdjacentTruss(item) {
     const newTruss = { ...item, id: nextId++ }
 
     if(selectedSide.value === 'left') {
-      newTruss.x = parentTruss.value.x - item.width - 10
+      newTruss.x = parentTruss.value.x - item.width - 16
       newTruss.y = parentTruss.value.y
       trusses.value.splice(index, 0, newTruss)
     } else if(selectedSide.value === 'right') {
-      newTruss.x = parentTruss.value.x + parentTruss.value.width + 10
+      newTruss.x = parentTruss.value.x + parentTruss.value.width + 16
       newTruss.y = parentTruss.value.y
       trusses.value.splice(index + 1, 0, newTruss)
     }
@@ -80,12 +83,16 @@ function addAdjacentTruss(item) {
 
 <template>
     <nav>
-        <Button title="Add truss" id="addTruss" :tag="PhPlus" onclick="listDialog.showModal()" />
         <Button title="Show details" :tag="PhListNumbers" onclick="details.showModal()" />
         <Button title="Download an image of current canvas" :tag="PhDownloadSimple" @click="download" /> <!-- Doesn't work on Linux, works on Mac (???) -->
     </nav>
 
-    <div id="canvas">
+    <div id="canvas" class="center">
+        <div class="startProject center">
+            <Button title="Add truss" :tag="PhPlus" onclick="listDialog.showModal()" />
+            <p>Start your project by adding the first truss</p>
+        </div>
+
         <Truss
             v-for="truss in trusses"
             :width="truss.width"
@@ -129,5 +136,12 @@ nav {
 #canvas {
   background-color: var(--black);
   height: calc(100vh - 88px);
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 </style>
