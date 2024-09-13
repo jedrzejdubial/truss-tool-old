@@ -8,7 +8,7 @@ const props = defineProps({
   y: Number
 })
 
-const emit = defineEmits(['remove', 'addAdjacent'])
+const emit = defineEmits(['remove', 'edge'])
 
 const hidden = ref('hidden')
 const rotation = ref(0)
@@ -22,7 +22,7 @@ function remove() {
 }
 
 function edge(side) {
-  emit('addAdjacent', { side, id: props.id })
+  emit('edge', { side, id: props.id })
 }
 
 function toggleActions() {

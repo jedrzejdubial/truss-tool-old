@@ -1,9 +1,6 @@
 <script setup>
-
-// TODO: instead of rendering .startProject on first site load, render it when trussCount is empty
-
 import html2canvas from 'html2canvas'
-import { PhPlus, PhListNumbers, PhDownloadSimple } from '@phosphor-icons/vue'
+import { PhListNumbers, PhDownloadSimple, PhPlus } from '@phosphor-icons/vue'
 import list from './public/list.json'
 
 const trusses = ref([])
@@ -13,12 +10,27 @@ const parentTruss = ref(null)
 const selectedSide = ref(null)
 
 function addTruss(item) {
-  trusses.value.push({ ...item, id: nextId++, x: 25, y: 75 /* Default position */ })
+  const newTruss = { ...item, id: nextId++ }
+
+  if(parentTruss.value && selectedSide.value) {
+    const index = trusses.value.findIndex(t => t.id === parentTruss.value.id)
+    newTruss.x = selectedSide.value === 'left'
+      ? parentTruss.value.x - parentTruss.value.width - 16
+      : parentTruss.value.x + parentTruss.value.width + 16
+    newTruss.y = parentTruss.value.y
+    trusses.value.splice(selectedSide.value === 'left' ? index : index + 1, 0, newTruss)
+  } else {
+    newTruss.x = 25
+    newTruss.y = 75
+    trusses.value.push(newTruss)
+  }
+
+  // Close dialog after picking truss
   listDialog.close()
 
-  // Remove .startProject welcome screen
-  document.querySelector('#canvas').classList.remove('center')
-  document.querySelector('.startProject').remove()
+  // Clear out the data
+  parentTruss.value = null
+  selectedSide.value = null
 }
 
 function removeTruss(id) {
@@ -57,27 +69,7 @@ function openListDialog(side, trussId) {
   listDialog.showModal()
 }
 
-function addAdjacentTruss(item) {
-  const index = trusses.value.findIndex(t => t.id === parentTruss.value.id)
-  const newTruss = { ...item, id: nextId++ }
-
-  if(selectedSide.value === 'left') {
-    newTruss.x = parentTruss.value.x - item.width - 16
-    newTruss.y = parentTruss.value.y
-    trusses.value.splice(index, 0, newTruss)
-  } else if(selectedSide.value === 'right') {
-    newTruss.x = parentTruss.value.x + parentTruss.value.width + 16
-    newTruss.y = parentTruss.value.y
-    trusses.value.splice(index + 1, 0, newTruss)
-  }
-
-  // Close dialog after picking truss
-  listDialog.close()
-
-  // Clear out the data
-  parentTruss.value = null
-  selectedSide.value = null
-}
+const showStartProject = computed(() => trusses.value.length === 0)
 </script>
 
 <template>
@@ -86,20 +78,19 @@ function addAdjacentTruss(item) {
         <Button title="Download an image of current canvas" :tag="PhDownloadSimple" @click="download" /> <!-- Doesn't work on Linux, works on Mac (???) -->
     </nav>
 
-    <div id="canvas" class="center">
-        <div class="startProject center">
-            <Button title="Add truss" :tag="PhPlus" onclick="listDialog.showModal()" />
+    <div id="canvas" :class="{ center: showStartProject }">
+        <div v-if="showStartProject" class="startProject center">
+            <Button title="Add truss" :tag="PhPlus" @click="openListDialog(null, null)" />
             <p>Start your project by adding the first truss</p>
         </div>
 
         <Truss
             v-for="truss in trusses"
-            :width="truss.width"
-            :x="truss.x" :y="truss.y"
+            v-bind="truss"
             @remove="removeTruss(truss.id)"
-            @addAdjacent="({ side, id }) => openListDialog(side, id)"
-            :id="truss.id"
-            :key="truss.id" />
+            @edge="({ side, id }) => openListDialog(side, id)"
+            :key="truss.id"
+        />
     </div>
 
     <Dialog title="Elements" id="listDialog">
@@ -107,8 +98,9 @@ function addAdjacentTruss(item) {
             <ListButton
                 v-for="(item, index) in list.items"
                 :item="item"
-                @click="() => parentTruss ? addAdjacentTruss(item) : addTruss(item)"
-                :key="index" />
+                @click="addTruss(item)"
+                :key="index"
+            />
         </div>
     </Dialog>
 
