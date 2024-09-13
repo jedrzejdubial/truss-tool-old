@@ -8,9 +8,9 @@ const props = defineProps({
 </script>
 
 <template>
-    <dialog :id="props.id">
+    <dialog :id="id">
         <div class="dialog_top">
-            <h2>{{ props.title }}</h2>
+            <h2>{{ title }}</h2>
             <Button title="Close menu" :tag="PhX" :width="44" :height="44" :iconSize="26" :onclick="`${id}.close()`" />
         </div>
 

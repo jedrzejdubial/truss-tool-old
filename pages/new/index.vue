@@ -1,4 +1,7 @@
 <script setup>
+
+// TODO: instead of rendering .startProject on first site load, render it when trussCount is empty
+
 import html2canvas from 'html2canvas'
 import { PhPlus, PhListNumbers, PhDownloadSimple } from '@phosphor-icons/vue'
 import list from './public/list.json'
@@ -19,8 +22,7 @@ function addTruss(item) {
 }
 
 function removeTruss(id) {
-  const index = trusses.value.findIndex(truss => truss.id === id)
-  if(index !== -1) trusses.value.splice(index, 1)
+  trusses.value = trusses.value.filter(truss => truss.id !== id)
 }
 
 const trussCount = computed(() => {
@@ -28,16 +30,15 @@ const trussCount = computed(() => {
   trusses.value.forEach(truss => {
     counts[truss.title] = (counts[truss.title] || 0) + 1
   })
+
   return Object.entries(counts)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([title, count]) => `${count}x ${title}`)
 })
 
 async function download() {
-  const canvas = document.querySelector('#canvas')
-
   try {
-    const image = await html2canvas(canvas)
+    const image = await html2canvas(document.querySelector('#canvas'))
     const link = document.createElement('a')
 
     link.download = 'truss_tool-image.png'
@@ -48,36 +49,34 @@ async function download() {
   }
 }
 
-function openListDialog(trussId, side) {
-  // Get parent element
+function openListDialog(side, trussId) {
+  // Set data
   parentTruss.value = trusses.value.find(t => t.id === trussId)
-
   selectedSide.value = side
+
   listDialog.showModal()
 }
 
 function addAdjacentTruss(item) {
-  if(parentTruss.value && selectedSide.value) {
-    const index = trusses.value.findIndex(t => t.id === parentTruss.value.id)
-    const newTruss = { ...item, id: nextId++ }
+  const index = trusses.value.findIndex(t => t.id === parentTruss.value.id)
+  const newTruss = { ...item, id: nextId++ }
 
-    if(selectedSide.value === 'left') {
-      newTruss.x = parentTruss.value.x - item.width - 16
-      newTruss.y = parentTruss.value.y
-      trusses.value.splice(index, 0, newTruss)
-    } else if(selectedSide.value === 'right') {
-      newTruss.x = parentTruss.value.x + parentTruss.value.width + 16
-      newTruss.y = parentTruss.value.y
-      trusses.value.splice(index + 1, 0, newTruss)
-    }
-
-    // Close dialog after picking truss
-    listDialog.close()
-
-    // Clear out the data
-    parentTruss.value = null
-    selectedSide.value = null
+  if(selectedSide.value === 'left') {
+    newTruss.x = parentTruss.value.x - item.width - 16
+    newTruss.y = parentTruss.value.y
+    trusses.value.splice(index, 0, newTruss)
+  } else if(selectedSide.value === 'right') {
+    newTruss.x = parentTruss.value.x + parentTruss.value.width + 16
+    newTruss.y = parentTruss.value.y
+    trusses.value.splice(index + 1, 0, newTruss)
   }
+
+  // Close dialog after picking truss
+  listDialog.close()
+
+  // Clear out the data
+  parentTruss.value = null
+  selectedSide.value = null
 }
 </script>
 
@@ -98,7 +97,7 @@ function addAdjacentTruss(item) {
             :width="truss.width"
             :x="truss.x" :y="truss.y"
             @remove="removeTruss(truss.id)"
-            @addAdjacent="({ side, id }) => openListDialog(id, side)"
+            @addAdjacent="({ side, id }) => openListDialog(side, id)"
             :id="truss.id"
             :key="truss.id" />
     </div>
@@ -129,7 +128,7 @@ nav {
 
 #list_bottom {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     margin-top: 8px;
 }
 

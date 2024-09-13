@@ -42,7 +42,7 @@ function toggleActions() {
             <Button title="Remove" :tag="PhTrashSimple" :width="29" :height="29" :iconSize="15" @click="remove" />
         </div>
 
-        <div class="truss" :id="`truss-${id}`" :style="{ width: props.width + 16 + 'px' }"> <!--element_wrap -->
+        <div class="truss" :id="`truss-${id}`" :style="{ width: props.width + 16 + 'px' }">
             <button class="edge left" @click="() => edge('left')"></button>
             <div
                 class="element"
